@@ -2,6 +2,7 @@ package application;
 	
 import java.io.IOException;
 
+import application.view.QueryController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -39,7 +40,8 @@ public class Main extends Application {
 		loader.setLocation(Main.class.getResource("view/MainContainer.fxml"));
 		try {
 
-			mainContainer = (BorderPane) loader.load();
+			// TODO - go back original and put the BordePane inside the QueriesContainer along with toolbar and JPanel
+			mainContainer = (BorderPane) ((BorderPane) loader.load()).getChildren().get(1);
 
 			Scene scene = new Scene(mainContainer);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -57,6 +59,9 @@ public class Main extends Application {
 
 			AnchorPane queriesContainer = (AnchorPane) loader.load();
 			mainContainer.setCenter(queriesContainer);
+			
+			QueryController controler = loader.getController();			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

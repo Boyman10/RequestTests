@@ -1,4 +1,4 @@
-package application.controller;
+package application.view;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +14,7 @@ import javafx.scene.control.Alert.AlertType;
 /**
  * Controller Class being called from the view to operate some kind of actions
  * The view is the MainContainer one
+ * It must be located next to the FXML file
  * @author hackme
  *
  */
@@ -29,6 +30,7 @@ public class QueryController {
 	
 	@FXML
 	private TextArea queryTextarea;
+	
 	
 	/**
 	 * Constructor class
@@ -55,4 +57,5 @@ public class QueryController {
 			problem.showAndWait();
 		}
 	}
+
 }
