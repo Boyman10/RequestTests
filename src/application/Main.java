@@ -40,8 +40,8 @@ public class Main extends Application {
 		loader.setLocation(Main.class.getResource("view/MainContainer.fxml"));
 		try {
 
-			// TODO - go back original and put the BordePane inside the QueriesContainer along with toolbar and JPanel
-			mainContainer = (BorderPane) ((BorderPane) loader.load()).getChildren().get(1);
+			// TODO - go back original and put the BorderPane inside the QueriesContainer along with toolbar and JPanel
+			mainContainer = (BorderPane) loader.load();
 
 			Scene scene = new Scene(mainContainer);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -60,7 +60,7 @@ public class Main extends Application {
 			AnchorPane queriesContainer = (AnchorPane) loader.load();
 			mainContainer.setCenter(queriesContainer);
 			
-			QueryController controler = loader.getController();			
+			//QueryController controler = loader.getController();			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
