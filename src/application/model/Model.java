@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +47,9 @@ public class Model  {
 	public void makeQuery() {
 
 		try {
-
+			// check time of query :
+			long start = System.currentTimeMillis();
+			 
 			Connection conn = PostgresConnection.getInstance();
 			conn.setAutoCommit(false);
 
@@ -88,6 +92,10 @@ public class Model  {
         
 			result.close();
 			state.close();
+			
+			// retrieve time now
+			long totalTime = System.currentTimeMillis() - start;
+			JOptionPane.showMessageDialog(null, "", "Good " + totalTime, JOptionPane.ERROR_MESSAGE);
 			
 			this.notifyObserver();
 
