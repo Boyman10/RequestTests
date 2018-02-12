@@ -7,12 +7,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import application.model.observer.IObserver;
-import javafx.collections.ObservableList;
+
 
 /**
  * Model class handling observed textarea and table view
@@ -26,11 +27,11 @@ public class Model  {
 
 	private String query;
 	// result set :
-	private Object[][] data;
+	//private Object[][] data;
 	private Object[] column;
 	
 	// https://java.developpez.com/faq/javafx/?page=Collections-observables
-	private ObservableList obs; 
+	private List<Object> data = new ArrayList<Object>(); 
 	
 	/**
 	 * Constructor initializing query
@@ -64,8 +65,10 @@ public class Model  {
 			//Petite manipulation pour obtenir le nombre de lignes
 			 result.last();
 			int rowCount = result.getRow();
-
-			data = new Object[ result.getRow()][meta.getColumnCount()];
+			
+			
+			
+			//data = new Object[ result.getRow()][meta.getColumnCount()];
 
 			//On revient au départ
 			result.beforeFirst();
@@ -74,7 +77,10 @@ public class Model  {
 			//On remplit le tableau d'Object[][]
 			while( result.next()){
 				for(int i = 1 ; i <= meta.getColumnCount(); i++)
-					data[j-1][i-1] = result.getObject(i);
+					
+					data.add(result.getObject(i));
+				
+					//data[j-1][i-1] = result.getObject(i);
 
 				j++;
 			}
@@ -103,7 +109,7 @@ public class Model  {
 	public void notifyObserver() {
 
 		for(IObserver obs : this.lObs )
-			obs.update(obs);
+			obs.update(data,column);
 
 	}
 

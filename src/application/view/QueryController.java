@@ -3,6 +3,7 @@ package application.view;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,11 +11,13 @@ import org.apache.logging.log4j.Logger;
 import application.controller.QueryThread;
 import application.model.Model;
 import application.model.observer.IObserver;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 
@@ -60,9 +63,16 @@ public class QueryController implements IObserver {
 
 		// if empty line trigger an error !
 		if (!query.equals("")) {
-			QueryThread qt = new QueryThread(query,this);			
+			
+			/*QueryThread qt = new QueryThread(query,this);			
 		    Thread t = new Thread(qt);
 		    t.start();
+		    */
+			
+			Model model = new Model(query);
+			model.addObserver(this);
+			model.makeQuery();
+			
 			//queryTable.setRowFactory(new Model(query));
 			logger.info("This is an info message : inserting data..." + query);
 		}
@@ -78,12 +88,27 @@ public class QueryController implements IObserver {
 	 * Retrieving data to update the table
 	 */
 	@Override
-	public void update(Object obj) {
+	public void update(Object data, Object[] column) {
 
 		// We retrieve the meta data to input into our View Table :
-		logger.info("updating object data/meta");
+		logger.info("updating object data/meta of size : " + ((ArrayList<Object>)data).size());
 		
-		queryTable.setItems((ObservableList<Object>) obj);
-	}
+		TableColumn[] nameCol = new TableColumn[column.length];
+		
+		for (int i=0;i < column.length; i++) {
+			nameCol[i] = new TableColumn((String)column[i]);
+			nameCol[i].setMinWidth(100);
+		}
+ 
+		// Updating columns
+		queryTable.getColumns().clear();
+        queryTable.getColumns().addAll(nameCol);
+        // inserting data :
+		//queryTable.setItems((ObservableList<Object>) obj);
+		// add row:
+        ObservableList<Object> alldata = FXCollections.observableArrayList(data);
 
+		queryTable.setItems(alldata);
+
+	}
 }
