@@ -1,11 +1,16 @@
 package application.view;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import application.controller.QueryThread;
 import application.model.Model;
 import application.model.observer.IObserver;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -25,8 +30,9 @@ public class QueryController implements IObserver {
 
 	Logger logger = LogManager.getRootLogger();
 	
+	//http://www.java2s.com/Tutorials/Java/JavaFX/0650__JavaFX_TableView.htm
 	@FXML
-	private TableView<Model> queryTable;
+	private TableView<Object> queryTable;
 	
 	@FXML
 	private Label timer;
@@ -68,11 +74,16 @@ public class QueryController implements IObserver {
 		}
 	}
 
+	/**
+	 * Retrieving data to update the table
+	 */
 	@Override
-	public void update(Object meta) {
+	public void update(Object obj) {
 
 		// We retrieve the meta data to input into our View Table :
-		logger.info("updating object meta");
+		logger.info("updating object data/meta");
+		
+		queryTable.setItems((ObservableList<Object>) obj);
 	}
 
 }
