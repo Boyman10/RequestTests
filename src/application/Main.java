@@ -60,8 +60,6 @@ public class Main extends Application {
 			AnchorPane queriesContainer = (AnchorPane) loader.load();
 			mainContainer.setCenter(queriesContainer);
 			
-			//QueryController controler = loader.getController();			
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

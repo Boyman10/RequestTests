@@ -1,6 +1,5 @@
 package application.view;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +20,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
@@ -38,22 +38,22 @@ public class QueryController implements IObserver {
 
 	//https://docs.oracle.com/javafx/2/ui_controls/table-view.htm
 	@FXML
-	private TableView queryTable;
+	private AnchorPane anchorTable;
 
 	@FXML
 	private Label timer;
 
 	@FXML
 	private TextArea queryTextarea;
-
-
+	private TableView queryTable;
+	
+	
 	/**
 	 * Constructor class
 	 */
 	public QueryController() {
-
-
-
+		
+		anchorTable = new AnchorPane();
 	}
 
 	/**
@@ -97,54 +97,92 @@ public class QueryController implements IObserver {
 
 		// We retrieve the meta data to input into our View Table :
 		logger.info("updating object data/meta of size  " + alldata.length);
+		
+		initialize(column,alldata);
+		
+	}
 
-		TableColumn<Map,String>[] nameCol = new TableColumn[column.length];
-		// Updating columns
-		queryTable.getColumns().clear();
+
+	
+	
+	/**
+	 * Initialization with fake data
+	 */
+	public void initialize(Object[] column,Object[][] alldata) {
+	    
+	    logger.info("This is an info message : initializing...");
+	 
+	    // Updating columns
+	 	queryTable.getColumns().clear();
+	 		
+        TableColumn<Map,String>[] nameCol = new TableColumn[column.length];
 		
 		
 		for (int i=0;i < column.length; i++) {
-			nameCol[i] = new TableColumn<Map,String>();
+			
+			// set column name
+			nameCol[i] = new TableColumn<Map,String>((String)column[i]);
+			
 			nameCol[i].setCellValueFactory(new MapValueFactory(column[i]));
 			nameCol[i].setMinWidth(100);
 		}
+ 
+        queryTable = new TableView<>(generateDataInMap(column,alldata));        
+        queryTable.setEditable(true);
+        queryTable.getSelectionModel().setCellSelectionEnabled(true);
+        queryTable.getColumns().setAll(nameCol);
+        
+        Callback<TableColumn<Map, String>, TableCell<Map, String>>
+            cellFactoryForMap = new Callback<TableColumn<Map, String>,
+                TableCell<Map, String>>() {
+                    @Override
+                    public TableCell call(TableColumn p) {
+                        return new TextFieldTableCell(new StringConverter() {
+                            @Override
+                            public String toString(Object t) {
+                                return t.toString();
+                            }
+                            @Override
+                            public Object fromString(String string) {
+                                return string;
+                            }                                    
+                        });
+                    }
+        };
 
 
-
-		// Populating columns now :
-		queryTable = new TableView<>(generateDataInMap(column,alldata));
-
-		queryTable.getColumns().setAll(nameCol);
-	      
-	}
-
-	private ObservableList<Map> generateDataInMap(Object[] keys, Object[][] alldata ) {
-
-		// Number of rows
-		int max = alldata.length;
-		String[] myKeys = new String[keys.length];
-		for(int i=0;i<keys.length;i++)
-			myKeys[i] = (String) keys[i];
-
-		ObservableList<Map> listData = FXCollections.observableArrayList();
-		
-
-
-		for (int i = 1; i < max; i++) {
-					
-			Map<String, String> dataRow = new HashMap<>();
-			
-			for(int j = 1; j < alldata[i-1].length; j++)
-			{
-				
-				String curStr = alldata[i-1][j-1].toString();
-				dataRow.put(myKeys[j-1],  curStr);
-
-				
-			}
-			listData.add(dataRow);
-		}
-
-		return listData;
-	}
+        for (int i=0;i < column.length; i++) {
+        	nameCol[i].setCellFactory(cellFactoryForMap);
+        }
+        
+        logger.info("This is an info message : added CellFactory...");
+        
+        
+        anchorTable.getChildren().add(queryTable);
+        
+	}	
+	
+    private ObservableList<Map> generateDataInMap(Object[] col,Object[][] data) {
+        int max = data.length;
+        logger.info("Observable List ");
+        
+        ObservableList<Map> allData = FXCollections.observableArrayList();
+        for (int i = 0; i < max; i++) {
+        	
+            Map<String, String> dataRow = new HashMap<>();
+ 
+            for(int j = 0;j<data[i].length;j++) {
+            	dataRow.put(col[j].toString(),data[i][j].toString());
+            	 logger.info("filling map : " + col[j] + " and data : " + data[i][j]);
+            }
+            allData.add(dataRow);
+        }
+        
+        logger.info("This is an info message : initializing map");
+        
+        
+        return allData;
+    }
+    
+    
 }
