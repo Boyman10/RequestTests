@@ -29,11 +29,11 @@ public class Model  {
 
 	private String query;
 	// result set :
-	//private Object[][] data;
+	private Object[][] data;
 	private Object[] column;
 	
 	// https://java.developpez.com/faq/javafx/?page=Collections-observables
-	private List<Object> data = new ArrayList<Object>(); 
+	//private List<Object> data = new ArrayList<Object>(); 
 	
 	/**
 	 * Constructor initializing query
@@ -72,7 +72,7 @@ public class Model  {
 			
 			
 			
-			//data = new Object[ result.getRow()][meta.getColumnCount()];
+			data = new Object[ result.getRow()][meta.getColumnCount()];
 
 			//On revient au départ
 			result.beforeFirst();
@@ -82,9 +82,9 @@ public class Model  {
 			while( result.next()){
 				for(int i = 1 ; i <= meta.getColumnCount(); i++)
 					
-					data.add(result.getObject(i));
+					//data.add(result.getObject(i));
 				
-					//data[j-1][i-1] = result.getObject(i);
+					data[j-1][i-1] = result.getObject(i);
 
 				j++;
 			}
